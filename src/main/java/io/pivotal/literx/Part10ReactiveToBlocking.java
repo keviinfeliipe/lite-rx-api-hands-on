@@ -1,6 +1,7 @@
 package io.pivotal.literx;
 
 import io.pivotal.literx.domain.User;
+import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -15,14 +16,16 @@ public class Part10ReactiveToBlocking {
 
 	// TODO Return the user contained in that Mono
 	User monoToValue(Mono<User> mono) {
-		return null;
+		return mono.doOnError(throwable -> {
+			throw Exceptions.propagate(throwable);
+		}).block();
 	}
 
 //========================================================================================
 
 	// TODO Return the users contained in that Flux
 	Iterable<User> fluxToValues(Flux<User> flux) {
-		return null;
+		return flux.toIterable();
 	}
 
 }
